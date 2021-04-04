@@ -9,6 +9,8 @@ interface Props {
   icon?: any;
   placeholder?: string;
   secureTextEntry?: boolean;
+  value?: string;
+  onChangeText?: (text: string) => void;
 }
 
 const _TextInput = ({icon, ...rest}: Props) => {

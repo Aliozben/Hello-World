@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {View, Image} from "react-native";
-import Axios from "axios";
+import Axios, {AxiosError} from "axios";
 
 import _Button from "../../components/_Button";
 import _TextInput from "../../components/_TextInput";
@@ -8,9 +8,9 @@ import styles from "./styles";
 interface Props {}
 
 const RegisterScreen = (props: Props) => {
-  const [username, setUsername] = useState<string>("usernamee");
-  const [email, setEmail] = useState<string>("emaill");
-  const [password, setPassword] = useState<string>("pass");
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const handleRegister = async () => {
     await Axios.post("http://192.168.1.25:3001/api/user/register", {
@@ -18,9 +18,11 @@ const RegisterScreen = (props: Props) => {
       email,
       password,
     })
-      .then(res => {})
-      .catch(err => {
-        console.log(err);
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch((err: AxiosError) => {
+        console.log(err.response?.data);
       });
   };
 
@@ -31,9 +33,25 @@ const RegisterScreen = (props: Props) => {
         source={require("../../assets/drawing.png")}
       />
       <View>
-        <_TextInput placeholder="Username" icon="tag-faces" />
-        <_TextInput placeholder="E-mail" icon="email" />
-        <_TextInput placeholder="Password" icon="shield-key" secureTextEntry />
+        <_TextInput
+          placeholder="Username"
+          value={username}
+          onChangeText={(text: string) => setUsername(text)}
+          icon="tag-faces"
+        />
+        <_TextInput
+          placeholder="E-mail"
+          value={email}
+          onChangeText={(text: string) => setEmail(text)}
+          icon="email"
+        />
+        <_TextInput
+          placeholder="Password"
+          value={password}
+          onChangeText={(text: string) => setPassword(text)}
+          icon="shield-key"
+          secureTextEntry
+        />
         <_TextInput
           placeholder="Password again :I"
           icon="shield-key"
