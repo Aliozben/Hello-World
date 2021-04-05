@@ -15,17 +15,14 @@ const LoginScreen = ({navigation, route}: AuthNavProps<"Register">) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const handleLogin = () => {
-    console.log("hell");
     Axios.post("/user/login", {
       email,
       password,
     })
       .then((res: AxiosResponse) => {
-        console.log("----------------------");
-        console.log(res.data);
+        login(res.data);
       })
       .catch((err: AxiosError) => {
-        console.log("----------------------");
         console.log(err.response?.data);
       });
   };

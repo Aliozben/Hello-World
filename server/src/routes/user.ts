@@ -12,7 +12,6 @@ userRouter.post("/register", async (req: Request, res: Response) => {
     if (error) console.log(error);
     result;
   });
-  console.log(queryResult.length);
   if (queryResult.length > 0)
     return res
       .status(400)
@@ -37,7 +36,6 @@ userRouter.post("/register", async (req: Request, res: Response) => {
 });
 
 userRouter.post("/login", async (req: Request, res: Response) => {
-  console.log("hell");
   const {email, password} = req.body;
   const queryResult = await User.find({email}, (error, result) => {
     if (error) console.log(error);
