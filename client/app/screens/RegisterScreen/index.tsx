@@ -13,7 +13,7 @@ const RegisterScreen = (props: Props) => {
   const [password, setPassword] = useState<string>("");
 
   const handleRegister = async () => {
-    await Axios.post("http://192.168.1.25:3001/api/user/register", {
+    await Axios.post("/user/register", {
       username,
       email,
       password,
