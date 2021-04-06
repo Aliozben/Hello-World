@@ -2,16 +2,21 @@ import Router, {Request, Response} from "express";
 
 import FriendList from "../models/friendList";
 import User from "../models/user";
+import verifyHeader from "../middlewares/verifyId";
 
 export const friendListRouter = Router();
 
-friendListRouter.get("/getallfriend", async (req: Request, res: Response) => {
-  const {user_id} = req.headers;
-  if (!user_id)
-    return res.status(400).send({ErrorCode: 400, Message: "Bad Request"});
-  const friendsID = await FriendList.find({user_id});
-  let users: any[] = [];
-  console.log(friendsID[0].friend_id_array);
-  return;
-  //   return res.send(queryResult[0].friend_id_array);
-});
+friendListRouter.get(
+  "/getallfriend",
+  verifyHeader,
+  async (req: Request, res: Response) => {
+    const {user_id} = req.body;
+    const friendsID = await FriendList.find({user_id});
+    let friendsInfo: {_id: string; username: string | undefined}[] = [];
+    for (let i = 0; i < friendsID[0].friend_id_array.length; i++) {
+      const userInfo = await User.findById(friendsID[0].friend_id_array[i]);
+      friendsInfo.push({_id: userInfo?._id, username: userInfo?.username});
+    }
+    return res.send(friendsInfo);
+  }
+);

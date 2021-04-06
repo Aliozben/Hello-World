@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {View} from "react-native";
 import {ScrollView} from "react-native-gesture-handler";
 import Axios, {AxiosResponse, AxiosError} from "axios";
@@ -13,18 +13,20 @@ const friendIcon = require("../../assets/new_friend.png");
 const groupIcon = require("../../assets/new_group.png");
 const profilePic = require("../../assets/icon.png");
 
-interface Props {}
+type friendInfo = {_id: string; username: string};
 
+interface Props {}
 export const NewChatScreen = ({navigation}: AppNavProps<"NewChat">) => {
-  const {user} = useContext(AuthContext);
+  const [friendList, setFriendList] = useState<friendInfo[]>([]);
 
   useEffect(() => {
     Axios.get("/friendlist/getallfriend")
       .then((res: AxiosResponse) => {
-        console.log(res.data);
+        setFriendList(res.data);
       })
       .catch((err: AxiosError) => console.log(err.response?.data));
   }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.banners}>
@@ -40,13 +42,21 @@ export const NewChatScreen = ({navigation}: AppNavProps<"NewChat">) => {
         />
       </View>
       <ScrollView>
-        <PersonCard
-          onPress={() =>
-            navigation.navigate("Chat", {name: "Username", picture: profilePic})
-          }
-          picture={profilePic}
-          name="User name 1"
-        />
+        {friendList.map(info => {
+          return (
+            <PersonCard
+              key={info._id}
+              onPress={() =>
+                navigation.navigate("Chat", {
+                  name: info.username,
+                  picture: profilePic,
+                })
+              }
+              picture={profilePic}
+              name={info.username}
+            />
+          );
+        })}
       </ScrollView>
     </View>
   );
