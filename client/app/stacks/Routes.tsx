@@ -3,12 +3,13 @@ import {NavigationContainer} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {ActivityIndicator, View} from "react-native";
 import Axios from "axios";
+import io from "socket.io-client";
 
 import {AuthContext} from "../providers/AuthProvider";
 import styles from "../configs/styles";
 import {MainRoute} from "./AppStack";
 import {AuthRoute} from "./AuthStack";
-import {DATABASE, USER} from "../configs/constants";
+import {SERVER, USER} from "../configs/constants";
 
 interface Props {}
 
@@ -17,7 +18,7 @@ export const Routes = (props: Props) => {
   const [loading, setLoading] = useState(true);
 
   Axios.defaults.headers.common[USER.USER_ID] = user?._id;
-  Axios.defaults.baseURL = DATABASE.BASE_URL;
+  Axios.defaults.baseURL = SERVER.BASE_URL + SERVER.API;
 
   useEffect(() => {
     AsyncStorage.getItem("user")
@@ -29,6 +30,9 @@ export const Routes = (props: Props) => {
         console.log(err);
         setLoading(false);
       });
+
+    const socket = io(SERVER.BASE_URL);
+    console.log("heee");
   }, []);
 
   if (loading)

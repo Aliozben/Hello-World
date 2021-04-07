@@ -1,5 +1,6 @@
-export const DATABASE = {
-  BASE_URL: "http://192.168.1.25:3001/api",
+export const SERVER = {
+  BASE_URL: "http://192.168.1.25:3001",
+  API: "/api",
 };
 
 export const USER = {
