@@ -1,11 +1,12 @@
 import express from "express";
-import http, {createServer} from "http";
+import {createServer} from "http";
 import mongoose from "mongoose";
-import SocketIO, {Server, Socket} from "socket.io";
+import {Server, Socket} from "socket.io";
 
-import UserModel from "./models/user";
 import {userRouter} from "./routes/user";
 import {friendListRouter} from "./routes/friendlist";
+import {chatRouter} from "./routes/chat";
+import Chat from "./models/chat";
 
 const app = express();
 const server = createServer(app);
@@ -21,9 +22,9 @@ mongoose.connect(
     useUnifiedTopology: true,
   }
 );
-
 app.use("/api/user", userRouter);
 app.use("/api/friendlist", friendListRouter);
+app.use("/api/chat", chatRouter);
 
 server.listen(3001, () => {
   console.log("server is running on 3001");

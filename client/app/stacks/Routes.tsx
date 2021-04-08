@@ -32,7 +32,6 @@ export const Routes = (props: Props) => {
       });
 
     const socket = io(SERVER.BASE_URL);
-    console.log("heee");
   }, []);
 
   if (loading)

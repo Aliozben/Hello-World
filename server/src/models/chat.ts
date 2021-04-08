@@ -1,13 +1,16 @@
 import mongoose, {mongo, Schema} from "mongoose";
 
 const chatSchema = new Schema({
-  users: {type: [], reqired: true},
+  user_ids: {type: [], reqired: true},
+  name: {type: String},
 });
 interface IChat {
-  users: string[];
+  user_ids: string[];
+  name?: string;
 }
 interface ChatDoc extends mongoose.Document {
-  users: string[];
+  user_ids: string[];
+  name?: string;
 }
 interface chatModelInterface extends mongoose.Model<ChatDoc> {
   build(attr: IChat): ChatDoc;
