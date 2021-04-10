@@ -1,35 +1,42 @@
-import React, {useEffect, useState} from "react";
-import {View, Text, Image, TouchableOpacity} from "react-native";
+import React, {useEffect, useState, useContext} from "react";
+import {View, Image, TouchableOpacity} from "react-native";
 import {ScrollView} from "react-native-gesture-handler";
-import Axios, {AxiosResponse, AxiosError} from "axios";
 
 import {MessageBar} from "../../components/MessageBar";
 import {AppNavProps} from "../../configs/paramLists";
+import {SocketContext} from "../../providers/SocketProvider";
+import {AuthContext} from "../../providers/AuthProvider";
 
 import pic from "../../assets/icon.png";
 import styles from "./styles";
+
+type Message = {
+  _id: string;
+  name: string;
+  timeStamp: "12:12";
+  message: "asdsdasd";
+  picture: any;
+};
 interface Props {}
 
 export const MainScreen = ({navigation}: AppNavProps<"Main">) => {
-  const [messages, setMessages] = useState([
-    {
-      name: "user name",
-      timeStamp: "11:32",
-      message: "after that i dont know",
-      picture: pic,
-    },
-    {
-      name: "user name2",
-      timeStamp: "11:32",
-      message: "after that i dont know",
-      picture: pic,
-    },
-  ]);
+  const socket = useContext(SocketContext);
+  const {user} = useContext(AuthContext);
+  const [messages, setMessages] = useState<Message[]>([]);
   useEffect(() => {
-    console.log("xxx");
-    Axios.get("/chat/rooms")
-      .then((res: AxiosResponse) => console.log(res.data))
-      .catch((err: AxiosError) => console.log(err.response?.data));
+    socket.emit("get-rooms", {user_id: user?._id}, (res: any[]) => {
+      console.log(res);
+      const x: Message[] = res.map((room: any) => {
+        return {
+          name: room.name,
+          timeStamp: "12:12",
+          message: "asdsdasd",
+          _id: room._id,
+          picture: pic,
+        };
+      });
+      setMessages(x);
+    });
   }, []);
   return (
     <View style={styles.container}>
@@ -37,7 +44,7 @@ export const MainScreen = ({navigation}: AppNavProps<"Main">) => {
         {messages.map(message => {
           return (
             <MessageBar
-              key={message.name}
+              key={message._id}
               name={message.name}
               timeStamp={message.timeStamp}
               message={message.message}

@@ -8,6 +8,7 @@ import {Image, Text, View} from "react-native";
 import styles from "../configs/styles";
 import {NewChatScreen} from "../screens/NewChatScreen";
 import {ChatScreen} from "../screens/ChatScreen";
+import SocketProvider from "../providers/SocketProvider";
 
 const Stack = createStackNavigator<AppParamList>();
 
@@ -53,24 +54,26 @@ const ActionBar = () => {
 interface Props {}
 export const MainRoute = (props: Props) => {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerStyle: {backgroundColor: colors.tritary},
-        headerTintColor: colors.primary,
-      }}
-      initialRouteName="Main"
-    >
-      <Stack.Screen
-        name="Main"
-        options={{
-          //@ts-ignore
-          headerTitle: props => <ActionBar {...props} />,
-          headerStatusBarHeight: 60,
+    <SocketProvider>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {backgroundColor: colors.tritary},
+          headerTintColor: colors.primary,
         }}
-        component={MainScreen}
-      />
-      <Stack.Screen name="NewChat" component={NewChatScreen} />
-      <Stack.Screen name="Chat" component={ChatScreen} />
-    </Stack.Navigator>
+        initialRouteName="Main"
+      >
+        <Stack.Screen
+          name="Main"
+          options={{
+            //@ts-ignore
+            headerTitle: props => <ActionBar {...props} />,
+            headerStatusBarHeight: 60,
+          }}
+          component={MainScreen}
+        />
+        <Stack.Screen name="NewChat" component={NewChatScreen} />
+        <Stack.Screen name="Chat" component={ChatScreen} />
+      </Stack.Navigator>
+    </SocketProvider>
   );
 };
