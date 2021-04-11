@@ -6,6 +6,7 @@ import {MessageBar} from "../../components/MessageBar";
 import {AppNavProps} from "../../configs/paramLists";
 import {SocketContext} from "../../providers/SocketProvider";
 import {AuthContext} from "../../providers/AuthProvider";
+import {getTime} from "../../utils/utilities";
 
 import pic from "../../assets/icon.png";
 import styles from "./styles";
@@ -13,8 +14,8 @@ import styles from "./styles";
 type Message = {
   _id: string;
   name: string;
-  timeStamp: "12:12";
-  message: "asdsdasd";
+  timeStamp: string;
+  message: string;
   picture: any;
 };
 interface Props {}
@@ -23,21 +24,41 @@ export const MainScreen = ({navigation}: AppNavProps<"Main">) => {
   const socket = useContext(SocketContext);
   const {user} = useContext(AuthContext);
   const [messages, setMessages] = useState<Message[]>([]);
+  const testt = () => {
+    socket.emit("send-message", {
+      user_id: user?._id,
+      room: "606f3034e5a1db21ac3c99fc",
+      message: "messagegegegege",
+      name: "mememe",
+      time: Date,
+    });
+  };
+
   useEffect(() => {
     socket.emit("get-rooms", {user_id: user?._id}, (res: any[]) => {
-      console.log(res);
-      const x: Message[] = res.map((room: any) => {
+      const roomList: Message[] = res.map((room: any) => {
         return {
           name: room.name,
-          timeStamp: "12:12",
-          message: "asdsdasd",
+          timeStamp: getTime(room.time),
+          message: room.message,
           _id: room._id,
           picture: pic,
         };
       });
-      setMessages(x);
+      setMessages(roomList);
     });
-  }, []);
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [socket]);
+  const sendMessage = () => {
+    socket.emit("send-message", {
+      room_id: messages[0]._id,
+      message: "heeeeeeehh",
+      user_id: user?._id,
+    });
+  };
   return (
     <View style={styles.container}>
       <ScrollView style={styles.messages}>
@@ -53,6 +74,7 @@ export const MainScreen = ({navigation}: AppNavProps<"Main">) => {
                 navigation.navigate("Chat", {
                   name: message.name,
                   picture: message.picture,
+                  _id: message._id,
                 })
               }
             />
@@ -60,7 +82,9 @@ export const MainScreen = ({navigation}: AppNavProps<"Main">) => {
         })}
       </ScrollView>
       <View style={styles.newChatButton}>
-        <TouchableOpacity onPress={() => navigation.navigate("NewChat")}>
+        <TouchableOpacity
+          onPress={() => sendMessage() /*navigation.navigate("NewChat")*/}
+        >
           <Image
             style={styles.chatImage}
             source={require("../../assets/new_chat.png")}

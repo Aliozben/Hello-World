@@ -2,7 +2,7 @@ import React, {createContext} from "react";
 import io from "socket.io-client";
 import {SERVER} from "../configs/constants";
 
-export const socket = io.connect(SERVER.BASE_URL);
+const socket = io.connect(SERVER.BASE_URL);
 export const SocketContext = createContext<SocketIOClient.Socket>(socket);
 
 interface Props {}

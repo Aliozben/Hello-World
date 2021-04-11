@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
 
   chat: {flex: 1, width: "100%"},
   bubbleReicive: {
+    flexDirection: "row",
     alignSelf: "flex-start",
     position: "relative",
   },
@@ -34,13 +35,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   bubbleHeaderReicive: {
-    position: "absolute",
-    top: -35,
-    left: -3,
-    flexDirection: "row",
-    alignItems: "flex-end",
+    justifyContent: "center",
+    alignItems: "center",
   },
   bubbleSent: {
+    flexDirection: "row-reverse",
     alignSelf: "flex-end",
     position: "relative",
   },
@@ -58,17 +57,23 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   bubbleHeaderSent: {
-    position: "absolute",
-    top: -35,
-    right: -2,
-    flexDirection: "row",
-    alignItems: "flex-end",
+    alignItems: "flex-start",
   },
-  image: {
+  imageSend: {
     width: 30,
     height: 30,
     borderRadius: 50,
-    margin: 5,
+    margin: 1,
+    marginRight: 5,
+    marginLeft: -7,
+  },
+  imageReicived: {
+    width: 30,
+    height: 30,
+    borderRadius: 50,
+    margin: 1,
+    marginRight: -7,
+    marginLeft: 5,
   },
   sendImage: {
     width: 50,
@@ -83,6 +88,11 @@ const styles = StyleSheet.create({
     fontFamily: cStyles.fontFamily,
     fontSize: 20,
     paddingLeft: 10,
+  },
+  time: {
+    fontSize: 10,
+    marginHorizontal: 30,
+    fontStyle: "italic",
   },
 });
 

@@ -3,7 +3,6 @@ import {NavigationContainer} from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {ActivityIndicator, View} from "react-native";
 import Axios from "axios";
-import io from "socket.io-client";
 
 import {AuthContext} from "../providers/AuthProvider";
 import styles from "../configs/styles";
@@ -30,8 +29,6 @@ export const Routes = (props: Props) => {
         console.log(err);
         setLoading(false);
       });
-
-    const socket = io(SERVER.BASE_URL);
   }, []);
 
   if (loading)

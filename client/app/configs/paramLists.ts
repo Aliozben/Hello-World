@@ -15,7 +15,7 @@ export type AuthNavProps<T extends keyof AuthParamList> = {
 export type AppParamList = {
   Main: undefined;
   NewChat: undefined;
-  Chat: {name: string; picture: any};
+  Chat: {name: string; picture: any; _id: string};
 };
 
 export type AppNavProps<T extends keyof AppParamList> = {

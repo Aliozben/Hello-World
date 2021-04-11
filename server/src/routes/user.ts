@@ -50,5 +50,5 @@ userRouter.post("/login", async (req: Request, res: Response) => {
     return res
       .status(400)
       .send({ErrorCode: 302, Message: "Ue or password is not valid."});
-  return res.send(queryResult[0]._id);
+  return res.send({_id: queryResult[0]._id, name: queryResult[0].username});
 });

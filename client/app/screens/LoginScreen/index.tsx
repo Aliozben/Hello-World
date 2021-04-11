@@ -20,7 +20,7 @@ const LoginScreen = ({navigation, route}: AuthNavProps<"Register">) => {
       password,
     })
       .then((res: AxiosResponse) => {
-        login(res.data);
+        login(res.data._id, res.data.name);
       })
       .catch((err: AxiosError) => {
         console.log(err.response?.data);
