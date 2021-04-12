@@ -76,9 +76,14 @@ chatRouter.post(
   "/allMessages",
   verifyId,
   async (req: Request, res: Response) => {
-    const {room_id} = req.body;
+    const {room_id, user_name} = req.body;
     const messages = await Message.find({chat_id: room_id});
-    console.log(messages);
-    return null;
+    const x = messages.map((message: any) => {
+      return message.message_owner_name !== user_name
+        ? {...message._doc, reicived: true}
+        : {...message._doc};
+    });
+    console.log(x);
+    return res.send(x);
   }
 );

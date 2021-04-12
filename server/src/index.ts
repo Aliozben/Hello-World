@@ -35,8 +35,8 @@ io.on("connection", (socket: Socket) => {
       callback(res);
     })
   );
-  socket.on("send-message", async data => {
-    const message = await sendMessage(data);
+  socket.on("send-message", data => {
+    const message = sendMessage(data);
     console.log(message);
     socket.to(data.room_id).emit("new-message", message);
   });

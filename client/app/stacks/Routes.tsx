@@ -17,6 +17,7 @@ export const Routes = (props: Props) => {
   const [loading, setLoading] = useState(true);
 
   Axios.defaults.headers.common[USER.USER_ID] = user?._id;
+  Axios.defaults.headers.common[USER.USER_NAME] = user?.name;
   Axios.defaults.baseURL = SERVER.BASE_URL + SERVER.API;
 
   useEffect(() => {

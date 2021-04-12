@@ -16,60 +16,37 @@ type Message = {
   message: string;
   name: string;
   reicived?: true;
-  id: string;
+  _id: string;
   timeStamp: string;
 };
 
 export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
   const socket = useContext(SocketContext);
   const {user} = useContext(AuthContext);
-  const [messages, setMessages] = useState<Message[]>([
-    //   {
-    //     message: "asdasdfasdfasdf",
-    //     name: "user1",
-    //     reicived: true,
-    //     id: " 1",
-    //     timeStamp: "11:11am",
-    //   },
-    //   {
-    //     message: "asdasdfasdfasdf",
-    //     name: "user1",
-    //     reicived: true,
-    //     id: "2",
-    //     timeStamp: "11:11am",
-    //   },
-    //   {
-    //     message: "asdasdfasdfasdf",
-    //     name: "user1",
-    //     reicived: true,
-    //     id: "asd",
-    //     timeStamp: "11:11am",
-    //   },
-    //   {
-    //     message: "11111asdasdfasdfasdf asdasdas asdasddasdasd",
-    //     name: "user2",
-    //     id: "asddsa",
-    //     timeStamp: "11:11am",
-    //   },
-    //   {
-    //     message: "11111asdasdfasdfasdf asdasdas asdasddasdasd",
-    //     name: "user2",
-    //     id: "5",
-    //     timeStamp: "11:11am",
-    //   },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState<string>("");
   useEffect(() => {
     console.log("useeffect");
-    socket.on("new-message", (res: Message) => {
+    socket.on("new-message", (res: any) => {
+      console.log(res);
       res.timeStamp = getTime(res.timeStamp);
       handleNewMessage(res);
     });
   }, [socket]);
+
   useEffect(() => {
     Axios.post("/chat/allMessages", {room_id: route.params._id})
       .then((res: AxiosResponse) => {
-        // setMessages(res.data);
+        const bubbles: Message[] = res.data.map((item: any) => {
+          return {
+            message: item.message,
+            name: item.message_owner_name,
+            reicived: item.reicived,
+            _id: item._id,
+            timeStamp: getTime(item.createdAt),
+          };
+        });
+        setMessages(bubbles);
       })
       .catch((error: AxiosError) => console.log(error));
   }, []);
@@ -105,7 +82,7 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
         );
       },
     });
-  });
+  }, []);
 
   let lastMessageName: string = "";
   const handleHeader = (name: string) => {
@@ -119,7 +96,7 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
         {messages.map(message => {
           const header = handleHeader(message.name);
           return message.reicived ? (
-            <View key={message.id} style={styles.bubbleReicive}>
+            <View key={message._id} style={styles.bubbleReicive}>
               {header && (
                 <View style={styles.bubbleHeaderReicive}>
                   <Image
@@ -136,7 +113,7 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
               </Text>
             </View>
           ) : (
-            <View key={message.id} style={styles.bubbleSent}>
+            <View key={message._id} style={styles.bubbleSent}>
               {header && (
                 <View style={styles.bubbleHeaderSent}>
                   <Image
