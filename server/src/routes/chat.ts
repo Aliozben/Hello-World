@@ -1,4 +1,5 @@
 import {Router, Response, Request} from "express";
+
 import verifyId from "../middlewares/verifyId";
 import Chat from "../models/chat";
 import Message from "../models/message";
@@ -63,6 +64,7 @@ export const getRooms = async (user_id: string) => {
 
 export const sendMessage = async (data: any) => {
   const {room_id, message, user_name} = data;
+  console.log(data);
   const newMessage = await Message.build({
     chat_id: room_id,
     message,
@@ -83,7 +85,6 @@ chatRouter.post(
         ? {...message._doc, reicived: true}
         : {...message._doc};
     });
-    console.log(x);
     return res.send(x);
   }
 );

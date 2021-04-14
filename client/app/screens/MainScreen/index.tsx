@@ -21,18 +21,10 @@ type Message = {
 interface Props {}
 
 export const MainScreen = ({navigation}: AppNavProps<"Main">) => {
-  const socket = useContext(SocketContext);
   const {user} = useContext(AuthContext);
+  const socket = useContext(SocketContext);
+  socket.connect();
   const [messages, setMessages] = useState<Message[]>([]);
-  const testt = () => {
-    socket.emit("send-message", {
-      user_id: user?._id,
-      room: "606f3034e5a1db21ac3c99fc",
-      message: "messagegegegege",
-      name: "mememe",
-      time: Date,
-    });
-  };
 
   useEffect(() => {
     socket.emit("get-rooms", {user_id: user?._id}, (res: any[]) => {
@@ -56,7 +48,7 @@ export const MainScreen = ({navigation}: AppNavProps<"Main">) => {
     socket.emit("send-message", {
       room_id: messages[0]._id,
       message: "heeeeeeehh",
-      user_id: user?._id,
+      user_name: user?.name,
     });
   };
   return (

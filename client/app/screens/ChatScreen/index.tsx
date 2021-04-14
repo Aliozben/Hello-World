@@ -26,11 +26,15 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState<string>("");
   useEffect(() => {
-    console.log("useeffect");
     socket.on("new-message", (res: any) => {
-      console.log(res);
-      res.timeStamp = getTime(res.timeStamp);
-      handleNewMessage(res);
+      const newMessage: Message = {
+        message: res.message,
+        name: res.message_owner_id,
+        reicived: true,
+        _id: res._id,
+        timeStamp: getTime(res.createdAt),
+      };
+      handleNewMessage(newMessage);
     });
   }, [socket]);
 
@@ -59,7 +63,7 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
     });
   };
   const handleNewMessage = (newMessage: Message) => {
-    setMessages([...messages, newMessage]);
+    setMessages(oldMessages => [...oldMessages, newMessage]);
   };
   useLayoutEffect(() => {
     navigation.setOptions({
