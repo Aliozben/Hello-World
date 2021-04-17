@@ -75,7 +75,7 @@ export const MainScreen = ({navigation}: AppNavProps<"Main">) => {
       </ScrollView>
       <View style={styles.newChatButton}>
         <TouchableOpacity
-          onPress={() => sendMessage() /*navigation.navigate("NewChat")*/}
+          onPress={() => /* sendMessage()*/ navigation.navigate("NewChat")}
         >
           <Image
             style={styles.chatImage}

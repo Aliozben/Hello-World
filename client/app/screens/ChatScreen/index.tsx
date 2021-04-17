@@ -29,12 +29,12 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
     socket.on("new-message", (res: any) => {
       const newMessage: Message = {
         message: res.message,
-        name: res.message_owner_id,
+        name: res.message_owner_name,
         reicived: true,
         _id: res._id,
         timeStamp: getTime(res.createdAt),
       };
-      handleNewMessage(newMessage);
+      handleNewMessage(res);
     });
   }, [socket]);
 
@@ -56,11 +56,25 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
   }, []);
 
   const sendMessage = () => {
-    socket.emit("send-message", {
-      room_id: route.params._id,
+    socket.emit(
+      "send-message",
+      {
+        room_id: route.params._id,
+        message: text,
+        user_name: user?.name,
+      },
+      (res: any) => {
+        handleNewMessage(res);
+      }
+    );
+    const message: Message = {
       message: text,
-      user_name: user?.name,
-    });
+      name: user?.name!,
+      _id: messages[messages.length - 1]._id + "1",
+      timeStamp: getTime(Date()),
+    };
+    setText("");
+    handleNewMessage(message);
   };
   const handleNewMessage = (newMessage: Message) => {
     setMessages(oldMessages => [...oldMessages, newMessage]);
