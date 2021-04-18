@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import {View, Text, Image} from "react-native";
+import {View, Text, Image, Button} from "react-native";
 import Axios, {AxiosResponse, AxiosError} from "axios";
 
 import {AuthNavProps} from "../../configs/paramLists";
@@ -7,6 +7,8 @@ import _Button from "../../components/_Button";
 import _TextInput from "../../components/_TextInput";
 import styles from "./styles";
 import {AuthContext} from "../../providers/AuthProvider";
+import Toast from "../../components/Toast";
+import {ToastContext} from "../../providers/ToastProvider";
 
 interface Props {}
 
@@ -14,6 +16,7 @@ const LoginScreen = ({navigation, route}: AuthNavProps<"Register">) => {
   const {login} = useContext(AuthContext);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const {addToast} = useContext(ToastContext);
   const handleLogin = () => {
     Axios.post("/user/login", {
       email,
@@ -23,7 +26,7 @@ const LoginScreen = ({navigation, route}: AuthNavProps<"Register">) => {
         login(res.data._id, res.data.name);
       })
       .catch((err: AxiosError) => {
-        console.log(err.response?.data);
+        addToast(err.response?.data.Message);
       });
   };
   return (
@@ -32,6 +35,7 @@ const LoginScreen = ({navigation, route}: AuthNavProps<"Register">) => {
         style={styles.image}
         source={require("../../assets/touching_phones.png")}
       />
+      <Toast />
       <View>
         <_TextInput
           placeholder="E-mail"
