@@ -64,7 +64,7 @@ export const MainScreen = ({navigation}: AppNavProps<"Main">) => {
               picture={message.picture}
               onPress={() =>
                 navigation.navigate("Chat", {
-                  name: message.name,
+                  name: [message.name],
                   picture: message.picture,
                   _id: message._id,
                 })
@@ -75,7 +75,13 @@ export const MainScreen = ({navigation}: AppNavProps<"Main">) => {
       </ScrollView>
       <View style={styles.newChatButton}>
         <TouchableOpacity
-          onPress={() => /* sendMessage()*/ navigation.navigate("NewChat")}
+          onPress={() =>
+            /* sendMessage()*/ navigation.navigate("NewChat", {
+              existingChats: messages.map(message => {
+                return message;
+              }),
+            })
+          }
         >
           <Image
             style={styles.chatImage}

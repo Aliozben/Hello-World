@@ -39,27 +39,40 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
   }, [socket]);
 
   useEffect(() => {
-    Axios.post("/chat/allMessages", {room_id: route.params._id})
-      .then((res: AxiosResponse) => {
-        const bubbles: Message[] = res.data.map((item: any) => {
-          return {
-            message: item.message,
-            name: item.message_owner_name,
-            reicived: item.reicived,
-            _id: item._id,
-            timeStamp: getTime(item.createdAt),
-          };
-        });
-        setMessages(bubbles);
-      })
-      .catch((error: AxiosError) => console.log(error));
+    if (route.params._id)
+      Axios.post("/chat/allMessages", {room_id: route.params._id})
+        .then((res: AxiosResponse) => {
+          const bubbles: Message[] = res.data.map((item: any) => {
+            return {
+              message: item.message,
+              name: item.message_owner_name,
+              reicived: item.reicived,
+              _id: item._id,
+              timeStamp: getTime(item.createdAt),
+            };
+          });
+          setMessages(bubbles);
+        })
+        .catch((error: AxiosError) => console.log(error));
   }, []);
 
-  const sendMessage = () => {
+  let room_id: string | null = null;
+  const sendMessage = async () => {
+    if (!room_id && !route.params._id) {
+      console.log("hhhh");
+      await Axios.post("/chat/newChat", {
+        names: [...route.params.name, user?.name],
+      })
+        .then((res: AxiosResponse) => {
+          room_id = res.data._id;
+          console.log(res.data);
+        })
+        .catch((err: AxiosError) => {});
+    }
     socket.emit(
       "send-message",
       {
-        room_id: route.params._id,
+        room_id: room_id,
         message: text,
         user_name: user?.name,
       },
@@ -70,7 +83,7 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
     const message: Message = {
       message: text,
       name: user?.name!,
-      _id: messages[messages.length - 1]._id + "1",
+      _id: messages.length > 0 ? messages[messages.length - 1]._id + "1" : "1",
       timeStamp: getTime(Date()),
     };
     setText("");

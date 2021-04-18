@@ -7,3 +7,8 @@ export const USER = {
   USER_ID: "user_id",
   USER_NAME: "user_name",
 };
+
+export const ERROR = {
+  FILL_FIELDS: "Fill all of the fields.",
+  PASSWORDS_DOESNT_MATCH: "Passwords didnt match.",
+};

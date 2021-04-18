@@ -16,7 +16,7 @@ const profilePic = require("../../assets/icon.png");
 type friendInfo = {_id: string; username: string};
 
 interface Props {}
-export const NewChatScreen = ({navigation}: AppNavProps<"NewChat">) => {
+export const NewChatScreen = ({navigation, route}: AppNavProps<"NewChat">) => {
   const [friendList, setFriendList] = useState<friendInfo[]>([]);
 
   useEffect(() => {
@@ -26,7 +26,24 @@ export const NewChatScreen = ({navigation}: AppNavProps<"NewChat">) => {
       })
       .catch((err: AxiosError) => console.log(err.response?.data));
   }, []);
-
+  const handleChat = (name: string, picture: any) => {
+    const existedChat = route.params.existingChats.filter(
+      chat => chat.name == name
+    );
+    if (existedChat[0]) {
+      navigation.navigate("Chat", {
+        _id: existedChat[0]._id,
+        name: [name],
+        picture: existedChat[0].picture,
+      });
+      return;
+    }
+    navigation.navigate("Chat", {
+      _id: null,
+      name: [name],
+      picture,
+    });
+  };
   return (
     <View style={styles.container}>
       <View style={styles.banners}>
@@ -46,12 +63,7 @@ export const NewChatScreen = ({navigation}: AppNavProps<"NewChat">) => {
           return (
             <PersonCard
               key={info._id}
-              onPress={() =>
-                navigation.navigate("Chat", {
-                  name: info.username,
-                  picture: profilePic,
-                })
-              }
+              onPress={() => handleChat(info.username, profilePic)}
               picture={profilePic}
               name={info.username}
             />

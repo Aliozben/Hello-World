@@ -9,6 +9,7 @@ import styles from "./styles";
 import {AuthContext} from "../../providers/AuthProvider";
 import Toast from "../../components/Toast";
 import {ToastContext} from "../../providers/ToastProvider";
+import {ERROR} from "../../configs/constants";
 
 interface Props {}
 
@@ -18,6 +19,10 @@ const LoginScreen = ({navigation, route}: AuthNavProps<"Register">) => {
   const [password, setPassword] = useState<string>("");
   const {addToast} = useContext(ToastContext);
   const handleLogin = () => {
+    if (email == "" || password == "") {
+      addToast(ERROR.FILL_FIELDS);
+      return;
+    }
     Axios.post("/user/login", {
       email,
       password,
