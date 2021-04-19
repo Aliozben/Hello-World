@@ -35,10 +35,9 @@ io.on("connection", (socket: Socket) => {
         cb(res);
       })
   );
-  socket.on("send-message", async (data, cb) => {
+  socket.on("send-message", async data => {
     const message = await sendMessage(data);
     socket.to(data.room_id.toString()).emit("new-message", message);
-    cb(message);
   });
 });
 server.listen(3001, () => {

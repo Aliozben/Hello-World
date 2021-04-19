@@ -93,7 +93,7 @@ chatRouter.post("/newChat", verifyId, async (req: Request, res: Response) => {
   console.log(req.body);
   const users = await User.find({username: req.body.names});
   const user_ids: string[] = users.map(user => {
-    return user._id;
+    return user._id.toString();
   });
   const chatInfo = await Chat.build({
     user_ids,

@@ -68,17 +68,18 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
           console.log(res.data);
         })
         .catch((err: AxiosError) => {});
-    }
+    } else room_id = route.params._id;
+
     socket.emit(
       "send-message",
       {
         room_id: room_id,
         message: text,
         user_name: user?.name,
-      },
-      (res: any) => {
-        handleNewMessage(res);
       }
+      // (res: any) => {
+      //   handleNewMessage(res);
+      // }
     );
     const message: Message = {
       message: text,

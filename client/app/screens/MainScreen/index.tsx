@@ -1,6 +1,7 @@
-import React, {useEffect, useState, useContext} from "react";
+import React, {useState, useContext, useCallback} from "react";
 import {View, Image, TouchableOpacity} from "react-native";
 import {ScrollView} from "react-native-gesture-handler";
+import {useFocusEffect} from "@react-navigation/native";
 
 import {MessageBar} from "../../components/MessageBar";
 import {AppNavProps} from "../../configs/paramLists";
@@ -26,24 +27,27 @@ export const MainScreen = ({navigation}: AppNavProps<"Main">) => {
   socket.connect();
   const [messages, setMessages] = useState<Message[]>([]);
 
-  useEffect(() => {
-    socket.emit("get-rooms", {user_id: user?._id}, (res: any[]) => {
-      const roomList: Message[] = res.map((room: any) => {
-        return {
-          name: room.name,
-          timeStamp: getTime(room.time),
-          message: room.message,
-          _id: room._id,
-          picture: pic,
-        };
+  useFocusEffect(
+    useCallback(() => {
+      if (!socket.connected) socket.connect();
+      socket.emit("get-rooms", {user_id: user?._id}, (res: any[]) => {
+        const roomList: Message[] = res.map((room: any) => {
+          return {
+            name: room.name,
+            timeStamp: getTime(room.time),
+            message: room.message,
+            _id: room._id,
+            picture: pic,
+          };
+        });
+        setMessages(roomList);
       });
-      setMessages(roomList);
-    });
 
-    return () => {
-      socket.disconnect();
-    };
-  }, [socket]);
+      return () => {
+        socket.disconnect();
+      };
+    }, [])
+  );
   const sendMessage = () => {
     socket.emit("send-message", {
       room_id: messages[0]._id,
