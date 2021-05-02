@@ -44,11 +44,16 @@ export const NewChatScreen = ({navigation, route}: AppNavProps<"NewChat">) => {
       picture,
     });
   };
+  const newFriendChat = () => {
+    Axios.post("/chat/getNewFriend", {friendList}).then((res: AxiosResponse) =>
+      handleChat(res.data[0].username, profilePic)
+    );
+  };
   return (
     <View style={styles.container}>
       <View style={styles.banners}>
         <NewChatBanner
-          onPress={() => {}}
+          onPress={newFriendChat}
           text="Let's Find A New Friend!"
           image={friendIcon}
         />

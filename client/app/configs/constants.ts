@@ -1,5 +1,5 @@
 export const SERVER = {
-  BASE_URL: "http://192.168.1.25:3001",
+  BASE_URL: "http://192.168.1.24:3001",
   API: "/api",
 };
 

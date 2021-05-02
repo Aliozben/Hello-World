@@ -99,5 +99,23 @@ chatRouter.post("/newChat", verifyId, async (req: Request, res: Response) => {
     user_ids,
   }).save();
   console.log(chatInfo);
-  res.send(chatInfo);
+  return res.send(chatInfo);
 });
+
+chatRouter.post(
+  "/getNewFriend",
+  verifyId,
+  async (req: Request, res: Response) => {
+    const {friendList, user_id} = req.body;
+    let alreadyFriend = undefined;
+    let newFriendInfo: any[];
+    do {
+      newFriendInfo = await User.aggregate([{$sample: {size: 1}}]);
+      alreadyFriend = await friendList.find(
+        (friend: {_id: string; username: string}) =>
+          friend._id == newFriendInfo[0]._id
+      );
+    } while (alreadyFriend !== undefined || user_id == newFriendInfo[0]._id);
+    return res.send(newFriendInfo);
+  }
+);
