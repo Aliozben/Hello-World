@@ -1,5 +1,11 @@
-import React, {useContext, useEffect, useLayoutEffect, useState} from "react";
-import {Image, Text, View} from "react-native";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import {Image, Text, View, UIManager, findNodeHandle} from "react-native";
 import {ScrollView, TouchableOpacity} from "react-native-gesture-handler";
 import Axios, {AxiosError, AxiosResponse} from "axios";
 
@@ -10,6 +16,7 @@ import buttonImage from "../../assets/3dot.png";
 import {SocketContext} from "../../providers/SocketProvider";
 import {AuthContext} from "../../providers/AuthProvider";
 import {getTime} from "../../utils/utilities";
+import {DropDown} from "../../components/DropDown";
 
 interface Props {}
 type Message = {
@@ -108,14 +115,32 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
       },
       headerRight: () => {
         return (
-          <TouchableOpacity>
+          <TouchableOpacity ref={asd=> = asd} onPress={showDropDownMenu}>
             <Image source={buttonImage} style={{width: 40, height: 75}} />
           </TouchableOpacity>
         );
       },
     });
   }, []);
-
+  const dropDownPos = useRef(null);
+  const [dropdownConfig, setDropdownConfig] = useState<{
+    visible: boolean;
+    position: {x: number; y: number};
+  }>({position: {x: 0, y: 0}, visible: false});
+  const showDropDownMenu = () => {
+    if (dropDownPos) {
+      UIManager.measure(
+        findNodeHandle(dropDownPos)!,
+        (x, y, width, height, pageX, PageY) => {
+          const pos = {left: pageX, top: PageY, width, height};
+          setDropdownConfig({
+            visible: true,
+            position: {x: pageX + width / 2, y: PageY + (2 * height) / 3},
+          });
+        }
+      );
+    }
+  };
   let lastMessageName: string = "";
   const handleHeader = (name: string) => {
     const isHeaderVisible = lastMessageName != name ? true : false;
@@ -124,6 +149,11 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
   };
   return (
     <View style={styles.container}>
+      <DropDown
+        dropDownConfig={dropdownConfig}
+        setDropDownConfig={setDropdownConfig}
+        listItems={[{name: "asd", action: () => {}}]}
+      />
       <ScrollView style={styles.chat}>
         {messages.map(message => {
           const header = handleHeader(message.name);
