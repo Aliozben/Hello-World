@@ -94,6 +94,20 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
     fontStyle: "italic",
   },
+  dropdownStyle: {
+    backgroundColor: cStyles.colors.secondary,
+    elevation: 10,
+    marginTop: -50,
+    marginRight: 10,
+    height: 45,
+    borderBottomLeftRadius: 10,
+  },
+  dropdownTextStyle: {
+    fontFamily: cStyles.fontFamily,
+    backgroundColor: cStyles.colors.secondary,
+    fontSize: 18,
+    color: cStyles.colors.black,
+  },
 });
 
 export default styles;

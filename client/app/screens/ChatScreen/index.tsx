@@ -8,6 +8,7 @@ import React, {
 import {Image, Text, View, UIManager, findNodeHandle} from "react-native";
 import {ScrollView, TouchableOpacity} from "react-native-gesture-handler";
 import Axios, {AxiosError, AxiosResponse} from "axios";
+import ModalDropdown from "react-native-modal-dropdown";
 
 import _TextInput from "../../components/_TextInput";
 import {AppNavProps} from "../../configs/paramLists";
@@ -16,7 +17,8 @@ import buttonImage from "../../assets/3dot.png";
 import {SocketContext} from "../../providers/SocketProvider";
 import {AuthContext} from "../../providers/AuthProvider";
 import {getTime} from "../../utils/utilities";
-import {DropDown} from "../../components/DropDown";
+import {ToastContext} from "../../providers/ToastProvider";
+import {CHAT} from "../../configs/constants";
 
 interface Props {}
 type Message = {
@@ -28,8 +30,10 @@ type Message = {
 };
 
 export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
+  console.log(route.params.name, route.params._id);
   const socket = useContext(SocketContext);
   const {user} = useContext(AuthContext);
+  const {addToast} = useContext(ToastContext);
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState<string>("");
   useEffect(() => {
@@ -115,31 +119,37 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
       },
       headerRight: () => {
         return (
-          <TouchableOpacity ref={asd=> = asd} onPress={showDropDownMenu}>
+          <ModalDropdown
+            options={["Add to Friend List"]}
+            onSelect={index => dropDownFunc(parseInt(index))}
+            dropdownStyle={styles.dropdownStyle}
+            dropdownTextStyle={styles.dropdownTextStyle}
+            //renderSeparator="false"
+          >
             <Image source={buttonImage} style={{width: 40, height: 75}} />
-          </TouchableOpacity>
+          </ModalDropdown>
         );
       },
     });
   }, []);
-  const dropDownPos = useRef(null);
-  const [dropdownConfig, setDropdownConfig] = useState<{
-    visible: boolean;
-    position: {x: number; y: number};
-  }>({position: {x: 0, y: 0}, visible: false});
-  const showDropDownMenu = () => {
-    if (dropDownPos) {
-      UIManager.measure(
-        findNodeHandle(dropDownPos)!,
-        (x, y, width, height, pageX, PageY) => {
-          const pos = {left: pageX, top: PageY, width, height};
-          setDropdownConfig({
-            visible: true,
-            position: {x: pageX + width / 2, y: PageY + (2 * height) / 3},
-          });
-        }
-      );
+  const dropDownFunc = (index: number) => {
+    switch (index) {
+      case 0:
+        addFriend();
+        break;
+      default:
+        break;
     }
+  };
+  const addFriend = async () => {
+    Axios.post("/friendlist/addFriend", {names: route.params.name})
+      .then((res: AxiosResponse) => {
+        const {data} = res;
+        addToast(CHAT.ADDED_NEW_FRIEND + route.params.name[0]);
+      })
+      .catch((err: AxiosError) => {
+        addToast(err.response?.data.message);
+      });
   };
   let lastMessageName: string = "";
   const handleHeader = (name: string) => {
@@ -149,11 +159,6 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
   };
   return (
     <View style={styles.container}>
-      <DropDown
-        dropDownConfig={dropdownConfig}
-        setDropDownConfig={setDropdownConfig}
-        listItems={[{name: "asd", action: () => {}}]}
-      />
       <ScrollView style={styles.chat}>
         {messages.map(message => {
           const header = handleHeader(message.name);
