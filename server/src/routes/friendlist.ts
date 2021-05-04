@@ -3,6 +3,7 @@ import Router, {Request, Response} from "express";
 import FriendList from "../models/friendList";
 import User from "../models/user";
 import verifyHeader from "../middlewares/verifyId";
+import {exception} from "node:console";
 
 export const friendListRouter = Router();
 
@@ -18,5 +19,23 @@ friendListRouter.get(
       friendsInfo.push({_id: userInfo?._id, username: userInfo?.username});
     }
     return res.send(friendsInfo);
+  }
+);
+
+friendListRouter.post(
+  "/addFriend",
+  verifyHeader,
+  async (req: Request, res: Response) => {
+    const {names, user_id} = req.body;
+    try {
+      const friend = await User.find({username: names[0]});
+      await FriendList.updateOne(
+        {user_id},
+        {$addToSet: {friend_id_array: friend[0]._id.toString()}},
+        {multi: true}
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 );
