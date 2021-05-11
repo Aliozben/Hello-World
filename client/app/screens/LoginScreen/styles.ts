@@ -10,8 +10,8 @@ const styles = StyleSheet.create({
   },
   image: {
     marginTop: 0,
-    width: 350,
-    height: 250,
+    width: 250,
+    height: 150,
   },
 });
 export default styles;
