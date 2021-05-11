@@ -1,6 +1,7 @@
 import {StyleSheet} from "react-native";
 
 import colors from "../../configs/colors";
+import cStyles from "../../configs/styles";
 
 const styles = StyleSheet.create({
   container: {
@@ -11,6 +12,7 @@ const styles = StyleSheet.create({
     borderColor: colors.tritary,
     borderBottomWidth: 10,
   },
+  text: cStyles.text,
 });
 
 export default styles;

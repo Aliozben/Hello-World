@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {View} from "react-native";
+import {Text, View} from "react-native";
 import {ScrollView} from "react-native-gesture-handler";
 import Axios, {AxiosResponse, AxiosError} from "axios";
 
@@ -18,6 +18,7 @@ type friendInfo = {_id: string; username: string};
 interface Props {}
 export const NewChatScreen = ({navigation, route}: AppNavProps<"NewChat">) => {
   const [friendList, setFriendList] = useState<friendInfo[]>([]);
+  console.log("..", friendList);
 
   useEffect(() => {
     Axios.get("/friendlist/getallfriend")
@@ -57,23 +58,31 @@ export const NewChatScreen = ({navigation, route}: AppNavProps<"NewChat">) => {
           text="Let's Find A New Friend!"
           image={friendIcon}
         />
-        <NewChatBanner
+        {/* <NewChatBanner
           onPress={() => {}}
           text="Create A New Group."
           image={groupIcon}
-        />
+        /> */}
       </View>
       <ScrollView>
-        {friendList.map(info => {
-          return (
-            <PersonCard
-              key={info._id}
-              onPress={() => handleChat(info.username, profilePic)}
-              picture={profilePic}
-              name={info.username}
-            />
-          );
-        })}
+        {friendList && friendList.length > 0 ? (
+          friendList.map(info => {
+            return (
+              <PersonCard
+                key={info._id}
+                onPress={() => handleChat(info.username, profilePic)}
+                picture={profilePic}
+                name={info.username}
+              />
+            );
+          })
+        ) : (
+          <View style={{alignItems: "center", paddingTop: 25}}>
+            <Text style={styles.text}>
+              You have no friend :( Let's Make Some!
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );

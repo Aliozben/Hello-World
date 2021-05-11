@@ -25,11 +25,11 @@ type Message = {
 
 export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
   const socket = useContext(SocketContext);
-  console.log(socket.id);
   const {user} = useContext(AuthContext);
   const {addToast} = useContext(ToastContext);
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState<string>("");
+
   useEffect(() => {
     socket.on("new-message", (res: any) => {
       const newMessage: Message = {
@@ -111,7 +111,6 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
             onSelect={index => dropDownFunc(parseInt(index))}
             dropdownStyle={styles.dropdownStyle}
             dropdownTextStyle={styles.dropdownTextStyle}
-            //renderSeparator="false"
           >
             <Image source={buttonImage} style={{width: 40, height: 75}} />
           </ModalDropdown>

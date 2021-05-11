@@ -113,6 +113,7 @@ chatRouter.post(
   "/getNewFriend",
   verifyId,
   async (req: Request, res: Response) => {
+    console.log(req.body);
     const {friendList, user_id} = req.body;
     let alreadyFriend = undefined;
     let newFriendInfo: any[];
