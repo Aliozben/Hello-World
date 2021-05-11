@@ -13,7 +13,7 @@ interface IMessage {
   chat_id: string;
   message: string;
 }
-interface MessageDoc extends mongoose.Document {
+export interface MessageDoc extends mongoose.Document {
   message_owner_name: string;
   chat_id: string;
   message: string;

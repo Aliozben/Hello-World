@@ -25,6 +25,7 @@ app.use("/api/chat", chatRouter);
 
 io.on("connection", (socket: Socket) => {
   const {_id} = socket.handshake.query;
+  console.log(socket.id, "connected");
   socket.on(
     "get-rooms",
     async (data, cb) =>
@@ -36,6 +37,7 @@ io.on("connection", (socket: Socket) => {
       })
   );
   socket.on("send-message", async data => {
+    console.log("entered to 'send-message' socket");
     const message = await sendMessage(data);
     socket.to(data.room_id.toString()).emit("new-message", message);
   });

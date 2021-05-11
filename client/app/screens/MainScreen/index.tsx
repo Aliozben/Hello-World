@@ -24,7 +24,6 @@ interface Props {}
 export const MainScreen = ({navigation}: AppNavProps<"Main">) => {
   const {user} = useContext(AuthContext);
   const socket = useContext(SocketContext);
-  socket.connect();
   const [messages, setMessages] = useState<Message[]>([]);
 
   useFocusEffect(
@@ -44,7 +43,7 @@ export const MainScreen = ({navigation}: AppNavProps<"Main">) => {
       });
 
       return () => {
-        socket.disconnect();
+        //socket.disconnect();
       };
     }, [])
   );

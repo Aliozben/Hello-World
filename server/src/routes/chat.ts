@@ -1,9 +1,11 @@
 import {Router, Response, Request} from "express";
+import {} from "bcryptjs";
 
 import verifyId from "../middlewares/verifyId";
 import Chat from "../models/chat";
-import Message from "../models/message";
+import Message, {MessageDoc} from "../models/message";
 import User from "../models/user";
+import {cryptText, decryptText} from "../utils/utilMetods";
 
 export const chatRouter = Router();
 
@@ -49,7 +51,7 @@ export const getRooms = async (user_id: string) => {
         _id: room._id,
         name,
         time: lastMessage[0].createdAt,
-        message: lastMessage[0].message,
+        message: decryptText(lastMessage[0].message),
       });
     } else
       roomsInfo.push({
@@ -64,13 +66,14 @@ export const getRooms = async (user_id: string) => {
 
 export const sendMessage = async (data: any) => {
   const {room_id, message, user_name} = data;
-  console.log(data);
+  const cryptedMessage = cryptText(message);
   const newMessage = await Message.build({
     chat_id: room_id,
-    message,
+    message: cryptedMessage,
     message_owner_name: user_name,
   }).save();
-  console.log(newMessage);
+  newMessage.message = message;
+  console.log("message has been send -> ", newMessage);
   return newMessage;
 };
 
@@ -81,16 +84,20 @@ chatRouter.post(
     const {room_id, user_name} = req.body;
     const messages = await Message.find({chat_id: room_id});
     const x = messages.map((message: any) => {
-      return message.message_owner_name !== user_name
-        ? {...message._doc, reicived: true}
-        : {...message._doc};
+      try {
+        message.message = decryptText(message.message);
+        return message.message_owner_name !== user_name
+          ? {...message._doc, reicived: true}
+          : message;
+      } catch (err) {
+        console.log(err);
+      }
     });
     return res.send(x);
   }
 );
 
 chatRouter.post("/newChat", verifyId, async (req: Request, res: Response) => {
-  console.log(req.body);
   const users = await User.find({username: req.body.names});
   const user_ids: string[] = users.map(user => {
     return user._id.toString();
@@ -98,7 +105,7 @@ chatRouter.post("/newChat", verifyId, async (req: Request, res: Response) => {
   const chatInfo = await Chat.build({
     user_ids,
   }).save();
-  console.log(chatInfo);
+  console.log("created a new chat room ->", chatInfo);
   return res.send(chatInfo);
 });
 

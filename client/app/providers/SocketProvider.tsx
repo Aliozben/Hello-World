@@ -17,6 +17,7 @@ const SocketProvider: React.FC<Props> = ({children}) => {
       _id: user?._id,
     },
   });
+  if (!socket.connected) socket.connect();
 
   return (
     <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>

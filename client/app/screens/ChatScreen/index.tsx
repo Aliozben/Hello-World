@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, {useContext, useEffect, useLayoutEffect, useState} from "react";
 import {Image, Text, View, UIManager, findNodeHandle} from "react-native";
 import {ScrollView, TouchableOpacity} from "react-native-gesture-handler";
 import Axios, {AxiosError, AxiosResponse} from "axios";
@@ -30,8 +24,8 @@ type Message = {
 };
 
 export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
-  console.log(route.params.name, route.params._id);
   const socket = useContext(SocketContext);
+  console.log(socket.id);
   const {user} = useContext(AuthContext);
   const {addToast} = useContext(ToastContext);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -70,28 +64,21 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
   let room_id: string | null = null;
   const sendMessage = async () => {
     if (!room_id && !route.params._id) {
-      console.log("hhhh");
       await Axios.post("/chat/newChat", {
         names: [...route.params.name, user?.name],
       })
         .then((res: AxiosResponse) => {
           room_id = res.data._id;
-          console.log(res.data);
         })
         .catch((err: AxiosError) => {});
     } else room_id = route.params._id;
 
-    socket.emit(
-      "send-message",
-      {
-        room_id: room_id,
-        message: text,
-        user_name: user?.name,
-      }
-      // (res: any) => {
-      //   handleNewMessage(res);
-      // }
-    );
+    socket.emit("send-message", {
+      room_id: room_id,
+      message: text,
+      user_name: user?.name,
+    });
+    console.log("send-message emit");
     const message: Message = {
       message: text,
       name: user?.name!,

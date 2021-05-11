@@ -3,7 +3,6 @@ import Router, {Request, Response} from "express";
 import FriendList from "../models/friendList";
 import User from "../models/user";
 import verifyHeader from "../middlewares/verifyId";
-import {exception} from "node:console";
 
 export const friendListRouter = Router();
 

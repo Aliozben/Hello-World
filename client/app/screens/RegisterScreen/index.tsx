@@ -32,7 +32,7 @@ const RegisterScreen = (props: Props) => {
       password,
     })
       .then(res => {
-        console.log(res.data);
+        addToast(res.data);
       })
       .catch((err: AxiosError) => {
         console.log(err.response?.data);

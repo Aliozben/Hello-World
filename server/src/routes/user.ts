@@ -9,7 +9,7 @@ export const userRouter = Router();
 userRouter.post("/register", async (req: Request, res: Response) => {
   const {username, email, password} = req.body;
   let queryResult = await User.find({email}, (error, result) => {
-    if (error) console.log(error);
+    if (error) console.log("error at user register ->", error);
     result;
   });
   if (queryResult.length > 0)
@@ -17,7 +17,7 @@ userRouter.post("/register", async (req: Request, res: Response) => {
       .status(400)
       .send({ErrorCode: 301, Message: "Username or Email already in use"});
   queryResult = await User.find({email}, (error, result) => {
-    if (error) console.log(error);
+    if (error) console.log("error at user register ->", error);
     result;
   });
   if (queryResult.length > 0)
@@ -38,7 +38,7 @@ userRouter.post("/register", async (req: Request, res: Response) => {
 userRouter.post("/login", async (req: Request, res: Response) => {
   const {email, password} = req.body;
   const queryResult = await User.find({email}, (error, result) => {
-    if (error) console.log(error);
+    if (error) console.log("error at user login ->", error);
     result;
   });
   if (queryResult.length === 0)
