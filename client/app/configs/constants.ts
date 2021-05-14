@@ -1,5 +1,5 @@
 export const SERVER = {
-  BASE_URL: "http://192.168.1.27:3001",
+  BASE_URL: "https://hello-world-ozben.herokuapp.com",
   API: "/api",
 };
 

@@ -39,7 +39,7 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
         _id: res._id,
         timeStamp: getTime(res.createdAt),
       };
-      handleNewMessage(res);
+      handleNewMessage(newMessage);
     });
   }, [socket]);
 
