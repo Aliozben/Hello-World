@@ -29,6 +29,7 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
   const {addToast} = useContext(ToastContext);
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState<string>("");
+  const scrollViewRef = React.useRef<ScrollView>(null);
 
   useEffect(() => {
     socket.on("new-message", (res: any) => {
@@ -78,7 +79,6 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
       message: text,
       user_name: user?.name,
     });
-    console.log("send-message emit");
     const message: Message = {
       message: text,
       name: user?.name!,
@@ -91,6 +91,10 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
   const handleNewMessage = (newMessage: Message) => {
     setMessages(oldMessages => [...oldMessages, newMessage]);
   };
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => {
@@ -143,9 +147,12 @@ export const ChatScreen = ({navigation, route}: AppNavProps<"Chat">) => {
     lastMessageName = name;
     return isHeaderVisible;
   };
+  const scrollToBottom = () => {
+    scrollViewRef.current?.scrollToEnd();
+  };
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.chat}>
+      <ScrollView style={styles.chat} ref={scrollViewRef}>
         {messages.map(message => {
           const header = handleHeader(message.name);
           return message.reicived ? (

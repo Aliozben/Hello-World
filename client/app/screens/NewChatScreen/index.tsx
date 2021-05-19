@@ -18,7 +18,6 @@ type friendInfo = {_id: string; username: string};
 interface Props {}
 export const NewChatScreen = ({navigation, route}: AppNavProps<"NewChat">) => {
   const [friendList, setFriendList] = useState<friendInfo[]>([]);
-  console.log("..", friendList);
 
   useEffect(() => {
     Axios.get("/friendlist/getallfriend")
